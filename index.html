@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UKmoni Real Estate Services | The Celebrity Agent</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#0A1128',
+                        navyLight: '#141E36',
+                        gold: '#F5A623',
+                        goldHover: '#F7B84B',
+                        light: '#F9F9F9',
+                        muted: '#9CA3AF',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0A1128; }
+        ::-webkit-scrollbar-thumb { background: #F5A623; border-radius: 10px; }
+        
+        /* Smooth Reveal Animation */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.25, 1, 0.5, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* Glassmorphism for Form */
+        .glass-form {
+            background: rgba(20, 30, 54, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Property Card Hover */
+        .property-card img { transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .property-card:hover img { transform: scale(1.08); }
+
+        /* Custom Cursor */
+        .cursor { width: 8px; height: 8px; background: #F5A623; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference; }
+        .cursor-follower { width: 40px; height: 40px; border: 1px solid rgba(245, 166, 35, 0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.1s; mix-blend-mode: difference; }
+    </style>
+</head>
+<body class="font-sans text-light bg-navy antialiased overflow-x-hidden selection:bg-gold selection:text-navy">
+
+    <!-- Custom Cursor -->
+    <div class="cursor hidden md:block"></div>
+    <div class="cursor-follower hidden md:block"></div>
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/2349115225248?text=Hello%20UKmoni%20Real%20Estate,%20I'd%20like%20to%20make%20an%20enquiry." target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform duration-300">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-40 transition-all duration-500" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24">
+                <!-- Logo mimicking UKmoni brand -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-12 h-12 rounded-full border-2 border-gold flex items-center justify-center bg-navyLight shadow-[0_0_15px_rgba(245,166,35,0.3)]">
+                        <span class="font-serif font-bold text-xl text-gold">UK</span>
+                    </div>
+                    <div>
+                        <span class="font-serif font-bold text-lg tracking-widest text-white block leading-tight">UKMONI</span>
+                        <span class="text-[0.55rem] tracking-[0.3em] text-gold uppercase">Real Estate Services</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-10 items-center">
+                    <a href="#home" class="text-muted hover:text-gold transition font-medium text-xs tracking-widest uppercase">Home</a>
+                    <a href="#properties" class="text-muted hover:text-gold transition font-medium text-xs tracking-widest uppercase">Properties</a>
+                    <a href="#about" class="text-muted hover:text-gold transition font-medium text-xs tracking-widest uppercase">About</a>
+                    <a href="#booking" class="bg-gold text-navy px-8 py-3 rounded-full font-bold hover:bg-goldHover transition duration-300 text-xs tracking-widest uppercase shadow-lg shadow-gold/20">Book Inspection</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white text-2xl focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-navy border-t border-navyLight">
+            <div class="px-6 py-6 flex flex-col space-y-6">
+                <a href="#home" class="text-white text-lg font-medium tracking-widest uppercase">Home</a>
+                <a href="#properties" class="text-white text-lg font-medium tracking-widest uppercase">Properties</a>
+                <a href="#about" class="text-white text-lg font-medium tracking-widest uppercase">About</a>
+                <a href="#booking" class="bg-gold text-navy px-6 py-3 rounded-full text-center font-bold tracking-widest uppercase">Book Inspection</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center bg-black pt-20">
+        <div class="absolute inset-0 z-0">
+            <!-- High-end luxury real estate image -->
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop" alt="Luxury Real Estate" class="w-full h-full object-cover opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-navy via-transparent to-transparent"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-navyLight bg-navyLight/50 backdrop-blur-sm mb-8 reveal">
+                    <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+                    <span class="text-xs font-medium tracking-widest text-gold uppercase">#TheCelebrityAgent</span>
+                </div>
+                
+                <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.1] mb-8 reveal" style="transition-delay: 100ms;">
+                    Your Trusted Real Estate <span class="italic text-gold font-normal">Partner.</span>
+                </h1>
+                
+                <p class="text-muted text-lg md:text-xl mb-10 max-w-xl font-light reveal" style="transition-delay: 200ms;">
+                    The No. 1 trusted real estate service from Benue State. We buy, sell, and manage premium properties in Makurdi and Abuja.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 reveal" style="transition-delay: 300ms;">
+                    <a href="#properties" class="bg-gold text-navy px-10 py-4 rounded-full font-bold hover:bg-goldHover transition duration-300 text-center tracking-wider text-sm uppercase shadow-lg shadow-gold/25">
+                        View Properties
+                    </a>
+                    <a href="#booking" class="border border-white/20 text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-navy transition duration-300 text-center tracking-wider text-sm uppercase">
+                        Book Inspection
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS / TRUST BANNER -->
+    <div class="bg-navyLight border-y border-navyLight py-10 relative z-20">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="reveal">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2">15K+</div>
+                    <div class="text-xs uppercase tracking-widest text-muted">Instagram Followers</div>
+                </div>
+                <div class="reveal" style="transition-delay: 100ms;">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2">2K+</div>
+                    <div class="text-xs uppercase tracking-widest text-muted">Properties Posted</div>
+                </div>
+                <div class="reveal" style="transition-delay: 200ms;">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2">100%</div>
+                    <div class="text-xs uppercase tracking-widest text-muted">Verified Listings</div>
+                </div>
+                <div class="reveal" style="transition-delay: 300ms;">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2">2</div>
+                    <div class="text-xs uppercase tracking-widest text-muted">Major Cities (Makurdi & Abuja)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROPERTIES SECTION (The Core Solution) -->
+    <section id="properties" class="py-24 bg-navy relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <span class="text-gold font-semibold tracking-widest uppercase text-xs">Our Listings</span>
+                <h2 class="font-serif text-5xl md:text-6xl font-bold text-white mt-4">Featured <span class="italic text-gold font-normal">Properties</span></h2>
+                <p class="text-muted mt-4 max-w-2xl mx-auto">Browse our exclusive selection of lands, homes, and commercial properties available for sale, rent, and lease.</p>
+            </div>
+
+            <!-- Property Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Property 1 -->
+                <div class="property-card bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal">
+                    <div class="relative h-64 overflow-hidden">
+                        <!-- Image from screenshot context: Commercial land -->
+                        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2064&auto=format&fit=crop" alt="Commercial Land Makurdi" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">FOR SALE</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> MAKURDI</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">Commercial Property (100x100)</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Strategically facing tarred road, opposite Merit Plaza Modern Market Road.</p>
+                        <div class="text-gold font-bold text-xl mb-6">₦50,000,000</div>
+                        <button onclick="selectProperty('Commercial Property (100x100) - Makurdi')" class="w-full block text-center bg-transparent border border-gold text-gold py-3 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-sm tracking-wider uppercase">Book Inspection</button>
+                    </div>
+                </div>
+
+                <!-- Property 2 -->
+                <div class="property-card bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" style="transition-delay: 100ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" alt="Luxury Duplex Abuja" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">FOR SALE</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> ABUJA</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">4-Bedroom Luxury Duplex</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Fully detached smart home with modern finishing, spacious compound, and 24/7 security.</p>
+                        <div class="text-gold font-bold text-xl mb-6">₦85,000,000</div>
+                        <button onclick="selectProperty('4-Bedroom Luxury Duplex - Abuja')" class="w-full block text-center bg-transparent border border-gold text-gold py-3 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-sm tracking-wider uppercase">Book Inspection</button>
+                    </div>
+                </div>
+
+                <!-- Property 3 -->
+                <div class="property-card bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" style="transition-delay: 200ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop" alt="Apartment for Rent" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">FOR RENT</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> MAKURDI</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">Modern 3-Bedroom Apartment</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Located in High Level, Makurdi. Features a fitted kitchen, ample parking, and water heater.</p>
+                        <div class="text-gold font-bold text-xl mb-6">₦3,500,000 / year</div>
+                        <button onclick="selectProperty('Modern 3-Bedroom Apartment - Makurdi')" class="w-full block text-center bg-transparent border border-gold text-gold py-3 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-sm tracking-wider uppercase">Book Inspection</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 reveal">
+                <a href="https://wa.me/2349115225248?text=Hello%20UKmoni%20Real%20Estate,%20I%20want%20to%20see%20more%20properties." target="_blank" class="inline-flex items-center gap-3 text-gold border border-gold/30 px-8 py-4 rounded-full hover:bg-gold hover:text-navy transition duration-300 font-medium text-sm tracking-widest uppercase">
+                    View All Properties on WhatsApp <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-24 bg-navyLight border-y border-navyLight">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <span class="text-gold font-semibold tracking-widest uppercase text-xs">Meet The Celebrity Agent</span>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold text-white mt-4 mb-6">About UKmoni Real Estate</h2>
+                    <p class="text-muted text-lg mb-6 leading-relaxed">
+                        With over <strong>15,000 followers</strong> and <strong>2,000+ property posts</strong>, UKmoni Real Estate Services has solidified its position as the No. 1 trusted real estate partner in Benue State and beyond.
+                    </p>
+                    <p class="text-muted text-lg mb-8 leading-relaxed">
+                        Whether you are looking to buy, sell, rent, or lease, we provide expert guidance and a seamless experience. Our deep understanding of the Makurdi and Abuja real estate markets ensures you get the best value for your investment.
+                    </p>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-4 text-white">
+                            <i class="fa-solid fa-check-circle text-gold text-xl"></i>
+                            <span>Verified and genuine property listings</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-white">
+                            <i class="fa-solid fa-check-circle text-gold text-xl"></i>
+                            <span>Expert negotiation and advisory</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-white">
+                            <i class="fa-solid fa-check-circle text-gold text-xl"></i>
+                            <span>Seamless documentation & management</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative reveal" style="transition-delay: 200ms;">
+                    <!-- Using a professional real estate agent image placeholder -->
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop" alt="UKmoni Real Estate Agent" class="rounded-3xl w-full h-[500px] object-cover border border-navyLight shadow-2xl">
+                    <div class="absolute -bottom-6 -left-6 bg-navy p-6 rounded-2xl border border-navyLight shadow-xl max-w-xs">
+                        <div class="flex items-center gap-4 mb-2">
+                            <i class="fa-brands fa-instagram text-2xl text-gold"></i>
+                            <span class="text-white font-bold">@lamukmoni</span>
+                        </div>
+                        <p class="text-muted text-xs">Follow us on Instagram for daily property updates and market insights.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SMART BOOKING & AUTOMATION SECTION -->
+    <section id="booking" class="py-24 bg-navy relative overflow-hidden">
+        <!-- Decorative Glow -->
+        <div class="absolute top-1/2 left-0 w-96 h-96 bg-gold/5 rounded-full blur-[120px] -translate-y-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left Info Side -->
+                <div class="reveal">
+                    <span class="text-gold font-semibold tracking-widest uppercase text-xs">Automated Booking</span>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold text-white mt-4 mb-8">Book a Property <br> <span class="italic text-gold font-normal">Inspection Instantly.</span></h2>
+                    <p class="text-muted text-lg mb-10 leading-relaxed font-light">
+                        Don't waste time with endless calls. Fill out the smart form, select the property you want to see, and our system will instantly connect you to the agent via WhatsApp to confirm your inspection.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 bg-navyLight border border-navyLight rounded-full flex items-center justify-center text-gold flex-shrink-0">
+                                <i class="fa-solid fa-phone text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white tracking-wide">Call or WhatsApp</h4>
+                                <a href="tel:+2349115225248" class="text-muted hover:text-white transition mt-1 block">0911 522 5248</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 bg-navyLight border border-navyLight rounded-full flex items-center justify-center text-gold flex-shrink-0">
+                                <i class="fa-solid fa-envelope text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white tracking-wide">Email Us</h4>
+                                <a href="mailto:talk2ukmoni@gmail.com" class="text-muted hover:text-white transition mt-1 block">talk2ukmoni@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 bg-navyLight border border-navyLight rounded-full flex items-center justify-center text-gold flex-shrink-0">
+                                <i class="fa-solid fa-location-dot text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white tracking-wide">Office Address</h4>
+                                <p class="text-muted mt-1">No. 41 Iorkyaa Ako Street, High Level, Makurdi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Form Side (Automation) -->
+                <div class="bg-navy rounded-3xl shadow-2xl p-8 md:p-10 glass-form relative overflow-hidden reveal" style="transition-delay: 200ms;">
+                    <!-- Decorative Corner -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-bl-full pointer-events-none"></div>
+
+                    <h3 class="font-serif text-3xl font-bold text-white mb-2">Book Inspection</h3>
+                    <p class="text-muted text-sm mb-8">Fill this out to send a direct WhatsApp message to the agent.</p>
+                    
+                    <form id="bookingForm" class="space-y-6">
+                        <div>
+                            <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Full Name</label>
+                            <input type="text" id="clientName" required class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition" placeholder="e.g. John Doe">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Property of Interest</label>
+                                <select id="propertyType" required class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition appearance-none cursor-pointer">
+                                    <option value="" disabled selected class="bg-navy">Select Property</option>
+                                    <option value="Commercial Property (100x100) - Makurdi" class="bg-navy">Commercial Property (100x100) - Makurdi</option>
+                                    <option value="4-Bedroom Luxury Duplex - Abuja" class="bg-navy">4-Bedroom Luxury Duplex - Abuja</option>
+                                    <option value="Modern 3-Bedroom Apartment - Makurdi" class="bg-navy">Modern 3-Bedroom Apartment - Makurdi</option>
+                                    <option value="Other / General Enquiry" class="bg-navy">Other / General Enquiry</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Preferred Date</label>
+                                <input type="date" id="inspectionDate" required class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition [color-scheme:dark] cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Message / Questions (Optional)</label>
+                            <textarea id="messageDetails" rows="3" class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition" placeholder="Any specific requirements..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gold text-navy font-bold py-4 rounded-xl hover:bg-goldHover transition duration-300 shadow-lg shadow-gold/20 flex items-center justify-center gap-3 mt-4">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Send Inspection Request
+                        </button>
+                        <p class="text-center text-xs text-muted mt-2">Clicking will open WhatsApp with your pre-filled details.</p>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white py-16 border-t border-navyLight">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full border border-gold flex items-center justify-center bg-navyLight">
+                            <span class="font-serif font-bold text-sm text-gold">UK</span>
+                        </div>
+                        <div>
+                            <span class="font-serif font-bold text-lg tracking-widest text-white block leading-tight">UKMONI</span>
+                            <span class="text-[0.55rem] tracking-[0.3em] text-gold uppercase">Real Estate Services</span>
+                        </div>
+                    </div>
+                    <p class="text-muted text-sm leading-relaxed max-w-sm">
+                        The No. 1 trusted real estate service from Benue State. We buy, sell, and manage properties for clients in Makurdi and Abuja. Your trusted partner for premium real estate.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6 uppercase tracking-widest text-xs">Quick Links</h4>
+                    <ul class="space-y-3 text-sm text-muted">
+                        <li><a href="#home" class="hover:text-gold transition">Home</a></li>
+                        <li><a href="#properties" class="hover:text-gold transition">Properties</a></li>
+                        <li><a href="#about" class="hover:text-gold transition">About Us</a></li>
+                        <li><a href="#booking" class="hover:text-gold transition">Book Inspection</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6 uppercase tracking-widest text-xs">Contact Us</h4>
+                    <ul class="space-y-3 text-sm text-muted">
+                        <li><a href="tel:+2349115225248" class="hover:text-gold transition"><i class="fa-solid fa-phone mr-2 text-gold"></i> 0911 522 5248</a></li>
+                        <li><a href="tel:+2347039344155" class="hover:text-gold transition"><i class="fa-solid fa-phone mr-2 text-gold"></i> 0703 934 4155</a></li>
+                        <li><a href="mailto:talk2ukmoni@gmail.com" class="hover:text-gold transition"><i class="fa-solid fa-envelope mr-2 text-gold"></i> talk2ukmoni@gmail.com</a></li>
+                        <li><i class="fa-solid fa-location-dot mr-2 text-gold"></i> No. 41 Iorkyaa Ako Street, High Level, Makurdi.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-navyLight pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-muted tracking-wider">
+                <p>&copy; 2024 UKmoni Real Estate Services. All rights reserved. Designed for excellence.</p>
+                <p class="mt-4 md:mt-0">#TheCelebrityAgent</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // 1. Custom Cursor Logic
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                setTimeout(() => {
+                    follower.style.left = e.clientX + 'px';
+                    follower.style.top = e.clientY + 'px';
+                }, 50);
+            });
+
+            const links = document.querySelectorAll('a, button, input, select, .property-card');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    cursor.style.background = 'transparent';
+                    cursor.style.border = '2px solid #F5A623';
+                    follower.style.width = '70px';
+                    follower.style.height = '70px';
+                    follower.style.borderColor = '#F5A623';
+                });
+                link.addEventListener('mouseleave', () => {
+                    cursor.style.width = '8px';
+                    cursor.style.height = '8px';
+                    cursor.style.background = '#F5A623';
+                    cursor.style.border = 'none';
+                    follower.style.width = '40px';
+                    follower.style.height = '40px';
+                    follower.style.borderColor = 'rgba(245, 166, 35, 0.5)';
+                });
+            });
+        }
+
+        // 2. Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // 3. Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-navy/95', 'backdrop-blur-md', 'border-b', 'border-navyLight');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('bg-navy/95', 'backdrop-blur-md', 'border-b', 'border-navyLight');
+                navbar.classList.add('bg-transparent');
+            }
+        });
+
+        // 4. Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+            
+            revealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger once on load
+
+        // 5. PROPERTY SELECTION AUTOMATION
+        // This function is called when a user clicks "Book Inspection" on a property card
+        function selectProperty(propertyName) {
+            const selectElement = document.getElementById('propertyType');
+            
+            // Find the matching option and select it
+            for (let i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === propertyName) {
+                    selectElement.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            // Smoothly scroll to the booking form
+            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+            
+            // Optional: Flash the form field to show it was selected
+            selectElement.style.borderColor = '#F5A623';
+            setTimeout(() => {
+                selectElement.style.borderColor = '#141E36'; // Revert to default
+            }, 1500);
+        }
+
+        // 6. SMART WHATSAPP BOOKING AUTOMATION
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('clientName').value;
+            const propertyType = document.getElementById('propertyType').value;
+            const date = document.getElementById('inspectionDate').value;
+            const details = document.getElementById('messageDetails').value || 'No additional message provided.';
+            
+            // Format the date nicely
+            const formattedDate = new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            // Construct the automated message
+            const message = `*New Inspection Booking - UKmoni Real Estate*%0A%0A` +
+                            `*Name:* ${name}%0A` +
+                            `*Property:* ${propertyType}%0A` +
+                            `*Preferred Date:* ${formattedDate}%0A%0A` +
+                            `*Message:* ${details}%0A%0A` +
+                            `Hello UKmoni, I'd like to book this inspection. Please confirm the available time.`;
+            
+            // WhatsApp Number (Using the primary number from the screenshot: 0911 522 5248)
+            const phoneNumber = '2349115225248'; 
+            
+            // Open WhatsApp with the automated message
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappURL, '_blank');
+            
+            // Reset form and show confirmation
+            this.reset();
+            alert('Your inspection request is being sent to the agent on WhatsApp. We look forward to showing you the property!');
+        });
+    </script>
+</body>
+  </html>
